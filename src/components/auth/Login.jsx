@@ -1,12 +1,13 @@
 import { Avatar, Box, Button, Checkbox, CssBaseline, FormControlLabel, Grid, Link, Paper, TextField, Typography } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import React, { createContext, useState } from 'react'
 
-import React from 'react'
-
+const AuthContext = createContext(null);
 const defaultTheme = createTheme();
 
 const Login = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -21,7 +22,10 @@ const Login = () => {
       })
     })
       .then(res => res.json())
-      .then(response => console.log("Response: ", response));
+      .then(response => {console.log("Response: ", response)
+    if (response.token) {
+      setIsAuthenticated(true)
+    }});
 
     console.log({
       email: data.get('email'),
@@ -30,6 +34,7 @@ const Login = () => {
   };
 
   return (
+    <AuthContext.Provider value={isAuthenticated}>
     <ThemeProvider theme={defaultTheme}>
       <Grid container component="main" sx={{ height: '100vh' }}>
         <CssBaseline />
@@ -113,6 +118,7 @@ const Login = () => {
         </Grid>
       </Grid>
     </ThemeProvider>
+    </AuthContext.Provider>
   )
 }
 
